@@ -75,3 +75,7 @@ services:
 	-
 		class: PHPStan\Rules\Deprecations\StaticServiceDeprecatedServiceRule
 		tags: [phpstan.rules.rule]
+
+	-
+		class: PHPStan\Rules\Drupal\PreRenderCallbackRule
+		tags: [phpstan.rules.rule]
