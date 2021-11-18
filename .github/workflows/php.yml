@@ -44,13 +44,12 @@ jobs:
         env:
           cache-name: cache-composer-packages
         with:
-          path: vendor
+          path: "**/"
           key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ matrix.php-version }}-${{ hashFiles('**/composer.json') }}
           restore-keys: |
             ${{ runner.os }}-build-${{ env.cache-name }}-
             ${{ runner.os }}-build-
             ${{ runner.os }}-
-            
       - name: "Install dependencies"
         if: steps.composer-cache.outputs.cache-hit != 'true'
         run: "composer update --no-progress --prefer-dist"
@@ -60,8 +59,6 @@ jobs:
       - name: "Add phpspec/prophecy-phpunit"
         run: "composer require --dev phpspec/prophecy-phpunit:^2"
         if: ${{ matrix.drupal == '^9.0' }}
-      - name: "PHPStan"
-        run: "php vendor/bin/phpstan analyze"
       - name: "PHPUnit"
         run: "php vendor/bin/phpunit --debug"
 

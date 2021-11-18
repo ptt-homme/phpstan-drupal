@@ -3,8 +3,12 @@ name: Static analysis
 on:
   push:
     branches: [main]
+    paths:
+      - "**/*.php"
   pull_request:
     branches: [main]
+    paths:
+      - "**/*.php"
 
 defaults:
   run:
@@ -14,6 +18,10 @@ jobs:
   phpstan:
     name: "PHPStan"
     runs-on: "ubuntu-latest"
+    strategy:
+      matrix:
+        php-version:
+          - "8.0"
 
     steps:
       - name: "Checkout"
@@ -25,7 +33,7 @@ jobs:
           coverage: none
           extensions: "dom, curl, libxml, mbstring, zip, pdo, mysql, pdo_mysql, gd"
           ini-values: "memory_limit=-1"
-          php-version: "8.0"
+          php-version: "${{ matrix.php-version }}"
           tools: composer:v2
 
       - name: Cache composer packages
@@ -34,15 +42,10 @@ jobs:
         env:
           cache-name: cache-composer-packages
         with:
-          path: |
-            vendor
-            tests
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-8.0-${{ hashFiles('**/composer.json') }}
+          path: "**/"
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ matrix.php-version }}-${{ hashFiles('**/composer.json') }}
           restore-keys: |
-            ${{ runner.os }}-build-${{ env.cache-name }}-
-            ${{ runner.os }}-build-
-            ${{ runner.os }}-
-
+            ${{ runner.os }}-build-${{ env.cache-name }}-${{ matrix.php-version }}
 
       - name: "Install dependencies"
         if: steps.composer-cache.outputs.cache-hit != 'true'

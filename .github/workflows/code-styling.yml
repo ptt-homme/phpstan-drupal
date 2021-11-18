@@ -3,17 +3,26 @@ name: Code Styling
 on:
   push:
     branches: [main]
+    paths:
+      - "**/*.php"
   pull_request:
     branches: [main]
+    paths:
+      - "**/*.php"
 
 defaults:
   run:
     shell: bash
 
+    
 jobs:
   phpcs:
     name: "PHPCS"
     runs-on: "ubuntu-latest"
+    strategy:
+      matrix:
+        php-version:
+          - "8.0"
 
     steps:
       - name: "Checkout"
@@ -25,10 +34,22 @@ jobs:
           coverage: none
           extensions: "dom, curl, libxml, mbstring, zip, pdo, mysql, pdo_mysql, gd"
           ini-values: "memory_limit=-1"
-          php-version: "8.0"
+          php-version: "${{ matrix.php-version }}"
           tools: composer:v2
 
+      - name: Cache composer packages
+        id: composer-cache
+        uses: actions/cache@v2
+        env:
+          cache-name: cache-composer-packages
+        with:
+          path: "**/"
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ matrix.php-version }}-${{ hashFiles('**/composer.json') }}
+          restore-keys: |
+            ${{ runner.os }}-build-${{ env.cache-name }}-${{ matrix.php-version }}
+
       - name: "Install dependencies"
+        if: steps.composer-cache.outputs.cache-hit != 'true'
         run: "composer update --no-progress --prefer-dist"
 
       - name: "PHPCS"
