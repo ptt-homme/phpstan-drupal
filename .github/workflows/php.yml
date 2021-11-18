@@ -46,8 +46,6 @@ jobs:
       - name: "Add phpspec/prophecy-phpunit"
         run: "composer require --dev phpspec/prophecy-phpunit:^2"
         if: ${{ matrix.drupal == '^9.0' }}
-      - name: "PHPCS"
-        run: "php vendor/bin/phpcs src"
       - name: "PHPStan"
         run: "php vendor/bin/phpstan analyze"
       - name: "PHPUnit"

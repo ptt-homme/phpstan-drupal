@@ -1,0 +1,35 @@
+name: Code Styling
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  phpcs:
+    name: "PHPCS"
+    runs-on: "ubuntu-latest"
+
+    steps:
+      - name: "Checkout"
+        uses: "actions/checkout@v2"
+
+      - name: "Install PHP"
+        uses: "shivammathur/setup-php@v2"
+        with:
+          coverage: none
+          extensions: "dom, curl, libxml, mbstring, zip, pdo, mysql, pdo_mysql, gd"
+          ini-values: "memory_limit=-1"
+          php-version: "8.0"
+          tools: composer:v2
+
+      - name: "Install dependencies"
+        run: "composer update --no-progress --prefer-dist"
+
+      - name: "PHPCS"
+        run: "php vendor/bin/phpcs src"
