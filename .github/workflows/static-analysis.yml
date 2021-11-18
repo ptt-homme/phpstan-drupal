@@ -1,0 +1,52 @@
+name: Static analysis
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  phpstan:
+    name: "PHPStan"
+    runs-on: "ubuntu-latest"
+
+    steps:
+      - name: "Checkout"
+        uses: "actions/checkout@v2"
+
+      - name: "Install PHP"
+        uses: "shivammathur/setup-php@v2"
+        with:
+          coverage: none
+          extensions: "dom, curl, libxml, mbstring, zip, pdo, mysql, pdo_mysql, gd"
+          ini-values: "memory_limit=-1"
+          php-version: "8.0"
+          tools: composer:v2
+
+      - name: Cache composer packages
+        id: composer-cache
+        uses: actions/cache@v2
+        env:
+          cache-name: cache-composer-packages
+        with:
+          path: |
+            vendor
+            tests
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-8.0-${{ hashFiles('**/composer.json') }}
+          restore-keys: |
+            ${{ runner.os }}-build-${{ env.cache-name }}-
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-
+
+
+      - name: "Install dependencies"
+        if: steps.composer-cache.outputs.cache-hit != 'true'
+        run: "composer update --no-progress --prefer-dist"
+
+      - name: "PHPStan"
+        run: "php vendor/bin/phpstan analyze"
