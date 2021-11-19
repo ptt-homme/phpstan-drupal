@@ -13,6 +13,7 @@ defaults:
   run:
     shell: bash
 
+    
 jobs:
   phpstan:
     name: "PHPStan"
