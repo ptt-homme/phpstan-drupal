@@ -17,6 +17,7 @@ use PHPStan\Type\Type;
 final class DrupalClassResolverReturnType
 {
 
+    
     public static function getType(
         MethodReflection $methodReflection,
         CallLike $methodCall,
