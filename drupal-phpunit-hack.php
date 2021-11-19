@@ -38,5 +38,3 @@ if (!file_exists($filename) || md5_file($filename) !== md5($alteredCode)) {
     file_put_contents($filename, $alteredCode);
 }
 include $filename;
-
-echo 'cocouu';
