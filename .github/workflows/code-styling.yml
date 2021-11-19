@@ -5,12 +5,10 @@ on:
     branches: [main]
     paths:
       - '**.php'
-      - '!**'
   pull_request:
     branches: [main]
     paths:
       - '**.php'
-      - '!**'
 
 defaults:
   run:
