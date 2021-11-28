@@ -23,8 +23,6 @@ parameters:
 			user:
 				class: Drupal\user\Entity\User
 				storage: Drupal\user\UserStorage
-			block:
-				class: Drupal\block\Entity\Block
 parametersSchema:
 	drupal: structure([
 		drupal_root: string()
