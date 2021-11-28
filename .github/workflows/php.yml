@@ -38,7 +38,20 @@ jobs:
           php-version: "${{ matrix.php-version }}"
           tools: composer:v2
           extensions: dom, curl, libxml, mbstring, zip, pdo, mysql, pdo_mysql, gd
+      - name: Cache composer packages
+        id: composer-cache
+        uses: actions/cache@v2
+        env:
+          cache-name: cache-composer-packages
+        with:
+          path: "**/"
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ matrix.php-version }}-${{ hashFiles('**/composer.json') }}
+          restore-keys: |
+            ${{ runner.os }}-build-${{ env.cache-name }}-
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-
       - name: "Install dependencies"
+        if: steps.composer-cache.outputs.cache-hit != 'true'
         run: "composer update --no-progress --prefer-dist"
       - name: "Downgrade dev dependencies"
         run: "composer require phpunit/phpunit:6.5.14 drush/drush:~9 drupal/core-recommended:${{ matrix.drupal }} drupal/core-dev:${{ matrix.drupal }} --with-all-dependencies --dev"
@@ -46,10 +59,6 @@ jobs:
       - name: "Add phpspec/prophecy-phpunit"
         run: "composer require --dev phpspec/prophecy-phpunit:^2"
         if: ${{ matrix.drupal == '^9.0' }}
-      - name: "PHPCS"
-        run: "php vendor/bin/phpcs src"
-      - name: "PHPStan"
-        run: "php vendor/bin/phpstan analyze"
       - name: "PHPUnit"
         run: "php vendor/bin/phpunit --debug"
 
