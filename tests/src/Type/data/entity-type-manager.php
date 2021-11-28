@@ -7,6 +7,7 @@ use function PHPUnit\Framework\assertInstanceOf;
 
 $etm = \Drupal::entityTypeManager();
 
+
 assertType('Drupal\node\NodeStorage', $etm->getStorage('node'));
 assertType('Drupal\user\UserStorage', $etm->getStorage('user'));
 assertType('Drupal\taxonomy\TermStorage', $etm->getStorage('taxonomy_term'));
