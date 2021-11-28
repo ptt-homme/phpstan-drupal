@@ -6,10 +6,8 @@ on:
     paths:
       - '**.php'
   pull_request:
-    branches: [main]
     paths:
-      - '**'
-      - '!**.php'
+      - '**.php'
 defaults:
   run:
     shell: bash
