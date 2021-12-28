@@ -226,6 +226,7 @@ parameters:
 				class: Drupal\Core\Field\Entity\BaseFieldOverride
 				storage: Drupal\Core\Field\BaseFieldOverrideStorage
 
+
 parametersSchema:
 	drupal: structure([
 		drupal_root: string()
