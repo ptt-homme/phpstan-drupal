@@ -14,5 +14,6 @@ if (!defined('DRUPAL_TEST_IN_CHILD_SITE')) {
     define('DRUPAL_TEST_IN_CHILD_SITE', false);
 }
 
+
 $drupalAutoloader = new DrupalAutoloader();
 $drupalAutoloader->register($container);
